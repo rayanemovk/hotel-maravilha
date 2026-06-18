@@ -1,0 +1,38 @@
+﻿{% extends "website/modelo.html" %}
+
+{% block titulo %}Listagem{% endblock %}
+
+{% block conteudo %}
+<div class="card border-0 shadow-sm">
+    <div class="card-body">
+        <h1 class="h4 fw-bold mb-3">Listagem</h1>
+
+        <p class="text-muted">Registros cadastrados no sistema.</p>
+
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th>Registro</th>
+                    <th class="text-end">Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for object in object_list %}
+                <tr>
+                    <td>{{ object }}</td>
+                    <td class="text-end">
+                        <a href="javascript:history.back()" class="btn btn-light btn-sm">Voltar</a>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="2" class="text-center text-muted py-4">
+                        Nenhum registro encontrado.
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}
