@@ -1,7 +1,7 @@
 ﻿from django.urls import path
 from .views import *
 from django.contrib.auth.views import (
-    LoginView, LogoutView, PasswordChangeView
+    LoginView, LogoutView, PasswordChangeView, PasswordChangeDoneView
 )
 
 urlpatterns = [
@@ -16,12 +16,17 @@ urlpatterns = [
     path("logout/", LogoutView.as_view(), name="logout"),
 
     path("alterar-senha/", PasswordChangeView.as_view(
-        template_name="website/form.html",
-        extra_context={
-            "titulo": "Alterar Senha",
-            "botao": "Alterar"
-        }
-    ), name="alterar_senha"),
+    template_name="website/form.html",
+    success_url=reverse_lazy("senha_alterada"),
+    extra_context={
+        "titulo": "Alterar Senha",
+        "botao": "Alterar"
+    }
+), name="alterar_senha"),
+
+path("senha-alterada/", PasswordChangeDoneView.as_view(
+    template_name="website/senha_alterada.html"
+), name="senha_alterada"),
 
     path("", Index.as_view(), name="pagina_inicial"),
     path("sobre/", Sobre.as_view(), name="sobre"),

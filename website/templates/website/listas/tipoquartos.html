@@ -7,8 +7,6 @@
     <div class="card-body">
         <h1 class="h4 fw-bold mb-3">Listagem</h1>
 
-        <p class="text-muted">Registros cadastrados no sistema.</p>
-
         <table class="table table-hover">
             <thead>
                 <tr>
@@ -21,7 +19,9 @@
                 <tr>
                     <td>{{ object }}</td>
                     <td class="text-end">
-                        <a href="javascript:history.back()" class="btn btn-light btn-sm">Voltar</a>
+                        <a href="../ver/{{ object.pk }}/" class="btn btn-outline-info btn-sm">Detalhes</a>
+                        <a href="../editar/{{ object.pk }}/" class="btn btn-outline-primary btn-sm">Editar</a>
+                        <a href="../excluir/{{ object.pk }}/" class="btn btn-outline-danger btn-sm">Excluir</a>
                     </td>
                 </tr>
                 {% empty %}

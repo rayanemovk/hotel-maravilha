@@ -1,4 +1,4 @@
-﻿{% extends "website/modelo.html" %}
+{% extends "website/modelo.html" %}
 
 {% block titulo %}Listagem{% endblock %}
 
@@ -19,7 +19,7 @@
                 <tr>
                     <td>{{ object }}</td>
                     <td class="text-end">
-                        <a href="../ver/{{ object.pk }}/" class="btn btn-outline-info btn-sm">Detalhes</a>
+                        <a href="../ver/{{ object.pk }}/" class="btn btn-outline-info btn-sm">Ver</a>
                         <a href="../editar/{{ object.pk }}/" class="btn btn-outline-primary btn-sm">Editar</a>
                         <a href="../excluir/{{ object.pk }}/" class="btn btn-outline-danger btn-sm">Excluir</a>
                     </td>

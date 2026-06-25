@@ -3,6 +3,7 @@ from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.views.generic.detail import DetailView
 from django.views.generic.list import ListView
 from django.urls import reverse_lazy
+from django import forms
 from django.contrib.auth.mixins import LoginRequiredMixin
 
 from .models import (
@@ -13,10 +14,25 @@ from .models import (
     Reserva,
     Hospedagem
 )
-
+class HospedagemForm(forms.ModelForm):
+    class Meta:
+        model = Hospedagem
+        fields = ["reserva", "data_entrada", "data_saida", "finalizada"]
+        widgets = {
+            "data_entrada": forms.DateInput(attrs={"type": "date"}),
+            "data_saida": forms.DateInput(attrs={"type": "date"}),
+        }
 
 class Index(TemplateView):
     template_name = "website/inicio.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["total_hospedes"] = Hospede.objects.count()
+        context["total_hospedagens"] = Hospedagem.objects.count()
+        context["total_quartos"] = Quarto.objects.count()
+        context["total_reservas"] = Reserva.objects.count()
+        return context
 
 
 class Sobre(TemplateView):
@@ -67,7 +83,7 @@ class TipoQuartoList(LoginRequiredMixin, ListView):
     template_name = "website/listas/tipoquartos.html"
 
 
-class TipoQuartoDetail(DetailView):
+class TipoQuartoDetail(LoginRequiredMixin, DetailView):
     model = TipoQuarto
     template_name = "website/ver/tipoquarto.html"
 
@@ -112,7 +128,7 @@ class StatusReservaList(LoginRequiredMixin, ListView):
     template_name = "website/listas/statusreservas.html"
 
 
-class StatusReservaDetail(DetailView):
+class StatusReservaDetail(LoginRequiredMixin, DetailView):
     model = StatusReserva
     template_name = "website/ver/statusreserva.html"
 
@@ -156,8 +172,7 @@ class QuartoList(LoginRequiredMixin, ListView):
     model = Quarto
     template_name = "website/listas/quartos.html"
 
-
-class QuartoDetail(DetailView):
+class QuartoDetail(LoginRequiredMixin, DetailView):
     model = Quarto
     template_name = "website/ver/quarto.html"
 
@@ -202,7 +217,7 @@ class HospedeList(LoginRequiredMixin, ListView):
     template_name = "website/listas/hospedes.html"
 
 
-class HospedeDetail(DetailView):
+class HospedeDetail(LoginRequiredMixin, DetailView):
     model = Hospede
     template_name = "website/ver/hospede.html"
 
@@ -220,6 +235,10 @@ class ReservaCreate(LoginRequiredMixin, CreateView):
         "botao": "Cadastrar"
     }
 
+    def form_valid(self, form):
+        form.instance.cadastrado_por = self.request.user
+        return super().form_valid(form)
+
 
 class ReservaUpdate(LoginRequiredMixin, UpdateView):
     model = Reserva
@@ -231,6 +250,9 @@ class ReservaUpdate(LoginRequiredMixin, UpdateView):
         "botao": "Salvar"
     }
 
+    def get_queryset(self):
+        return super().get_queryset().filter(cadastrado_por=self.request.user)
+
 
 class ReservaDelete(LoginRequiredMixin, DeleteView):
     model = Reserva
@@ -241,15 +263,24 @@ class ReservaDelete(LoginRequiredMixin, DeleteView):
         "botao": "Excluir"
     }
 
+    def get_queryset(self):
+        return super().get_queryset().filter(cadastrado_por=self.request.user)
+
 
 class ReservaList(LoginRequiredMixin, ListView):
     model = Reserva
     template_name = "website/listas/reservas.html"
 
+    def get_queryset(self):
+        return super().get_queryset().filter(cadastrado_por=self.request.user)
 
-class ReservaDetail(DetailView):
+
+class ReservaDetail(LoginRequiredMixin, DetailView):
     model = Reserva
     template_name = "website/ver/reserva.html"
+
+    def get_queryset(self):
+        return super().get_queryset().filter(cadastrado_por=self.request.user)
 
 
 #################### Views para Hospedagem ####################
@@ -257,7 +288,7 @@ class ReservaDetail(DetailView):
 
 class HospedagemCreate(LoginRequiredMixin, CreateView):
     model = Hospedagem
-    fields = ["reserva", "data_entrada", "data_saida", "finalizada"]
+    form_class = HospedagemForm
     template_name = "website/form.html"
     success_url = reverse_lazy("hospedagem_list")
     extra_context = {
@@ -265,16 +296,23 @@ class HospedagemCreate(LoginRequiredMixin, CreateView):
         "botao": "Cadastrar"
     }
 
+    def form_valid(self, form):
+        form.instance.cadastrado_por = self.request.user
+        return super().form_valid(form)
+
 
 class HospedagemUpdate(LoginRequiredMixin, UpdateView):
     model = Hospedagem
-    fields = ["reserva", "data_entrada", "data_saida", "finalizada"]
+    form_class = HospedagemForm
     template_name = "website/form.html"
     success_url = reverse_lazy("hospedagem_list")
     extra_context = {
         "titulo": "Edição de Hospedagens",
         "botao": "Salvar"
     }
+
+    def get_queryset(self):
+        return super().get_queryset().filter(cadastrado_por=self.request.user)
 
 
 class HospedagemDelete(LoginRequiredMixin, DeleteView):
@@ -286,12 +324,21 @@ class HospedagemDelete(LoginRequiredMixin, DeleteView):
         "botao": "Excluir"
     }
 
+    def get_queryset(self):
+        return super().get_queryset().filter(cadastrado_por=self.request.user)
+
 
 class HospedagemList(LoginRequiredMixin, ListView):
     model = Hospedagem
     template_name = "website/listas/hospedagens.html"
 
+    def get_queryset(self):
+        return super().get_queryset().filter(cadastrado_por=self.request.user)
 
-class HospedagemDetail(DetailView):
+
+class HospedagemDetail(LoginRequiredMixin, DetailView):
     model = Hospedagem
     template_name = "website/ver/hospedagem.html"
+
+    def get_queryset(self):
+        return super().get_queryset().filter(cadastrado_por=self.request.user)

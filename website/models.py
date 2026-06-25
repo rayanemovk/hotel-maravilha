@@ -59,17 +59,17 @@ class Reserva(models.Model):
 
 class Hospedagem(models.Model):
     reserva = models.ForeignKey(Reserva, on_delete=models.PROTECT)
-    data_entrada = models.DateTimeField(
+    data_entrada = models.DateField(
         null=True,
         blank=True,
         verbose_name="data de entrada",
-        help_text="Informe a data de entrada, ex: 2024-12-31 14:00"
+        help_text="Informe a data de entrada, ex: 2024-12-31"
     )
-    data_saida = models.DateTimeField(
+    data_saida = models.DateField(
         null=True,
         blank=True,
         verbose_name="data de saída",
-        help_text="Informe a data de saída, ex: 2025-01-01 11:00"
+        help_text="Informe a data de saída, ex: 2025-01-01"
     )
     finalizada = models.BooleanField(default=False)
 

@@ -1,15 +1,241 @@
 ﻿{% extends "website/modelo.html" %}
 
-{% block titulo %}Sistema de Hotel{% endblock %}
+{% block titulo %}Hotel Maravilha{% endblock %}
 
 {% block conteudo %}
-<h1>Sistema de Hotel</h1>
-<p>Bem-vindo ao sistema de gerenciamento de hotel.</p>
 
-<ul>
-    <li><a href="{% url 'hospede_list' %}">Hóspedes</a></li>
-    <li><a href="{% url 'quarto_list' %}">Quartos</a></li>
-    <li><a href="{% url 'reserva_list' %}">Reservas</a></li>
-    <li><a href="{% url 'hospedagem_list' %}">Hospedagens</a></li>
-</ul>
+<style>
+    .hero-hotel {
+        background: linear-gradient(120deg, #fff 0%, #f7edff 55%, #eadbff 100%);
+        border-radius: 26px;
+        padding: 45px;
+        min-height: 300px;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .hero-title {
+        font-size: 3.5rem;
+        font-weight: 800;
+        color: #070b22;
+    }
+
+    .hero-subtitle {
+        font-size: 1.3rem;
+        color: #475569;
+    }
+
+    .hero-img {
+        font-size: 11rem;
+        color: #6d28d9;
+        opacity: .9;
+    }
+
+    .mini-stat {
+    background: #fff;
+    border-radius: 18px;
+    padding: 18px 22px;
+    box-shadow: 0 8px 25px rgba(124, 58, 237, .08);
+    height: 100%;
+    min-height: 95px;
+    display: flex;
+    align-items: center;
+}
+
+    .home-card{
+    border-radius:22px;
+    background:#fff;
+    box-shadow:0 10px 25px rgba(15,23,42,.06);
+    transition:.25s;
+    height:100%;
+    min-height:260px;
+    display:flex;
+}
+
+.home-card .card-body{
+    display:flex;
+    flex-direction:column;
+    width:100%;
+}
+
+.home-card p{
+    flex-grow:1;
+}
+
+.home-card:hover{
+    transform:translateY(-6px);
+}
+
+    .home-icon {
+        width: 86px;
+        height: 86px;
+        border-radius: 24px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 2.6rem;
+    }
+
+    .icon-purple { background: #ede9fe; color: #6d28d9; }
+    .icon-pink { background: #fce7f3; color: #db2777; }
+    .icon-blue { background: #dbeafe; color: #2563eb; }
+    .icon-green { background: #dcfce7; color: #16a34a; }
+    .icon-orange { background: #ffedd5; color: #f97316; }
+    .icon-cyan { background: #ccfbf1; color: #0f766e; }
+
+    .arrow-btn {
+        width: 46px;
+        height: 46px;
+        border-radius: 50%;
+        background: #6d28d9;
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-left: auto;
+        font-size: 1.4rem;
+    }
+</style>
+
+<div class="hero-hotel mb-4">
+    <div class="row align-items-center">
+        <div class="col-lg-7">
+            <h1 class="hero-title">Bem-vinda, {{ request.user.username|default:"Rayane" }}! 👋</h1>
+            <p class="hero-subtitle">
+                Gerencie seu hotel de forma <strong class="text-primary">simples, rápida e eficiente.</strong>
+            </p>
+
+            <div class="row g-3 mt-4">
+                <div class="col-md-4">
+                    <div class="mini-stat d-flex align-items-center gap-3">
+                        <i class="bi bi-calendar-event fs-2 text-primary"></i>
+                        <div>
+                            <strong>24/06/2026</strong><br>
+                            <span class="text-muted">Data atual</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="mini-stat d-flex align-items-center gap-3">
+                        <i class="bi bi-bed fs-2 text-danger"></i>
+                        <div>
+                            <strong>{{ total_hospedagens }}</strong>
+                            <span class="text-muted">Hospedagens hoje</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="mini-stat d-flex align-items-center gap-3">
+                        <i class="bi bi-people-fill fs-2 text-success"></i>
+                        <div>
+                            <strong>{{ total_hospedes }}</strong>
+                            <span class="text-muted">Hóspedes cadastrados</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-5 text-center d-none d-lg-block">
+            <i class="bi bi-buildings-fill hero-img"></i>
+        </div>
+    </div>
+</div>
+
+<div class="row g-4">
+
+    <div class="col-md-6 col-xl-3">
+        <a href="{% url 'hospede_list' %}" class="text-decoration-none">
+            <div class="card home-card">
+                <div class="card-body p-4">
+                    <div class="home-icon icon-purple mb-3">
+                        <i class="bi bi-person-fill"></i>
+                    </div>
+                    <h3 class="fw-bold text-primary">Hóspedes</h3>
+                    <p class="text-muted">Cadastre e gerencie os hóspedes do hotel.</p>
+                    <div class="arrow-btn"><i class="bi bi-arrow-right"></i></div>
+                </div>
+            </div>
+        </a>
+    </div>
+
+    <div class="col-md-6 col-xl-3">
+        <a href="{% url 'quarto_list' %}" class="text-decoration-none">
+            <div class="card home-card">
+                <div class="card-body p-4">
+                    <div class="home-icon icon-pink mb-3">
+                        <i class="bi bi-bed-fill"></i>
+                    </div>
+                    <h3 class="fw-bold text-danger">Quartos</h3>
+                    <p class="text-muted">Gerencie os quartos disponíveis.</p>
+                    <div class="arrow-btn"><i class="bi bi-arrow-right"></i></div>
+                </div>
+            </div>
+        </a>
+    </div>
+
+    <div class="col-md-6 col-xl-3">
+        <a href="{% url 'tipoquarto_list' %}" class="text-decoration-none">
+            <div class="card home-card">
+                <div class="card-body p-4">
+                    <div class="home-icon icon-blue mb-3">
+                        <i class="bi bi-tag-fill"></i>
+                    </div>
+                    <h3 class="fw-bold text-primary">Tipos de Quarto</h3>
+                    <p class="text-muted">Cadastre os diferentes tipos de quarto.</p>
+                    <div class="arrow-btn"><i class="bi bi-arrow-right"></i></div>
+                </div>
+            </div>
+        </a>
+    </div>
+
+    <div class="col-md-6 col-xl-3">
+        <a href="{% url 'statusreserva_list' %}" class="text-decoration-none">
+            <div class="card home-card">
+                <div class="card-body p-4">
+                    <div class="home-icon icon-green mb-3">
+                        <i class="bi bi-card-checklist"></i>
+                    </div>
+                    <h3 class="fw-bold text-success">Status da Reserva</h3>
+                    <p class="text-muted">Gerencie os status das reservas.</p>
+                    <div class="arrow-btn"><i class="bi bi-arrow-right"></i></div>
+                </div>
+            </div>
+        </a>
+    </div>
+
+    <div class="col-md-6 col-xl-3">
+        <a href="{% url 'reserva_list' %}" class="text-decoration-none">
+            <div class="card home-card">
+                <div class="card-body p-4">
+                    <div class="home-icon icon-orange mb-3">
+                        <i class="bi bi-calendar-check-fill"></i>
+                    </div>
+                    <h3 class="fw-bold text-warning">Reservas</h3>
+                    <p class="text-muted">Gerencie todas as reservas.</p>
+                    <div class="arrow-btn"><i class="bi bi-arrow-right"></i></div>
+                </div>
+            </div>
+        </a>
+    </div>
+
+    <div class="col-md-6 col-xl-3">
+        <a href="{% url 'hospedagem_list' %}" class="text-decoration-none">
+            <div class="card home-card">
+                <div class="card-body p-4">
+                    <div class="home-icon icon-cyan mb-3">
+                        <i class="bi bi-suitcase2-fill"></i>
+                    </div>
+                    <h3 class="fw-bold text-info">Hospedagens</h3>
+                    <p class="text-muted">Acompanhe as hospedagens.</p>
+                    <div class="arrow-btn"><i class="bi bi-arrow-right"></i></div>
+                </div>
+            </div>
+        </a>
+    </div>
+
+</div>
+
 {% endblock %}
